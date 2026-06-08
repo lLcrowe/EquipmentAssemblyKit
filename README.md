@@ -9,6 +9,12 @@ A tag-based **modular part assembly system** for Unity. Snap parts into slots by
 
 ---
 
+## Demo
+
+[![Demo](https://img.youtube.com/vi/n2UT2t8MIcg/hqdefault.jpg)](https://www.youtube.com/watch?v=n2UT2t8MIcg)
+
+---
+
 ## Core Concepts
 
 | Concept | Type | Description |
