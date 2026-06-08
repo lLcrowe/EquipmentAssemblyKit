@@ -1,0 +1,40 @@
+// ════════════════════════════════════════════════════════════════════════
+//  [확장 예제] 게임별 전투/저항 기여를 PartContribution에 추가하는 법
+// ════════════════════════════════════════════════════════════════════════
+//
+//  EquipmentAssemblyKit는 "조립 메커니즘"만 제공한다. 대미지/투사체/조준 같은
+//  전투 데이터는 게임마다 다르므로 코어에서 제외했다.
+//
+//  이 파일을 ".cs"로 확장자를 바꾸고(.cs.txt → .cs), 아래 주석을 풀어
+//  자기 게임의 데이터 타입으로 채우면 — PartContribution이 그 필드를
+//  그대로 갖게 된다. 상속도 인터페이스도 없이, 같은 partial class에
+//  필드를 덧붙이는 컴포지션 확장이다.
+//
+//  EquipmentAssembler / AssemblyController 등 코어 코드는 이 확장 필드를
+//  몰라도 그대로 동작한다. 합산/적용은 ExampleEquipmentController처럼
+//  자기 컨트롤러에서 읽어 처리한다.
+// ════════════════════════════════════════════════════════════════════════
+/*
+using UnityEngine;
+
+namespace lLCroweTool.EquipmentAssemblyKit
+{
+    public partial class PartContribution
+    {
+        [Header("대미지 기여 (게임 확장)")]
+        public bool hasDamage;
+        public MyDamagePartData damagePartData;        // ← 자기 게임의 전투 데이터 타입
+
+        [Header("투사체 기여 (게임 확장)")]
+        public bool hasProjectile;
+        public MyProjectilePartData projectilePartData;
+
+        [Header("조준 기여 (게임 확장)")]
+        public bool hasAim;
+        public MyAimPartData aimPartData;
+
+        [Header("저항 (게임 확장)")]
+        public MyDamageResistance[] resistances = new MyDamageResistance[0];
+    }
+}
+*/
