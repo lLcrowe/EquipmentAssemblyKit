@@ -142,4 +142,4 @@ Editor/          조립 윈도우 · 인스펙터 · 태그 드롭다운 · 뷰�
 
 MIT — [LICENSE.md](LICENSE.md) 참조.
 
-*by lLcrowe · EquipmentAssemblyKit v1.1.0*
+*by lLcrowe · EquipmentAssemblyKit v1.0.0*

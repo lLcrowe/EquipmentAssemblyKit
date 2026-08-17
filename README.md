@@ -142,4 +142,4 @@ Editor/          Assembly window · inspector · tag dropdown · viewport · imp
 
 MIT — see [LICENSE.md](LICENSE.md).
 
-*by lLcrowe · EquipmentAssemblyKit v1.1.0*
+*by lLcrowe · EquipmentAssemblyKit v1.0.0*
