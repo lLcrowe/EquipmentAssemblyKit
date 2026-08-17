@@ -1,6 +1,6 @@
 {
   "name": "com.llcrowe.equipmentassemblykit",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "displayName": "Equipment Assembly Kit",
   "description": "태그 기반 모듈러 파츠 조립 시스템. 슬롯-태그 조립, 재귀 파츠 트리, 비주얼 자동 조립, 스탯 합산 골격을 제공한다. 게임 스탯/버프 연결은 컴포지션(Action 콜백)으로. 외부 모듈 의존 없음.",
   "unity": "2021.3",

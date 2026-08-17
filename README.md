@@ -80,14 +80,13 @@ var controller = unitGO.AddComponent<ExampleEquipmentController>();
 
 controller.ApplyStat  = (statType, modType, value) => myStats.Add(statType, modType, value);
 controller.RemoveStat = (statType, modType, value) => myStats.Remove(statType, modType, value);
-controller.ApplyBuff  = (buffSO) => myBuffSystem.Add(buffSO as MyBuff);
-controller.RemoveBuff = (buffSO) => myBuffSystem.Remove(buffSO as MyBuff);
+controller.BindBuffCallbacks<MyBuff>(myBuffSystem.Add, myBuffSystem.Remove);
 
 controller.RegisterEquipment(equip);   // applies stats/buffs via callbacks on register
 ```
 
 - `statType` is a `string` ID (e.g. `"STAT_ATK"`) — map it to your game's stat key.
-- Buff/skill SOs arrive as `ScriptableObject` — cast to your own type.
+- `BindBuffCallbacks<TBuff>` validates the buff type, so the game hookup needs no cast. A mismatched SO type is reported as an error.
 
 ### (B) Clone the controller
 
@@ -143,4 +142,4 @@ Editor/          Assembly window · inspector · tag dropdown · viewport · imp
 
 MIT — see [LICENSE.md](LICENSE.md).
 
-*by lLcrowe · EquipmentAssemblyKit v1.0.0*
+*by lLcrowe · EquipmentAssemblyKit v1.1.0*

@@ -80,14 +80,13 @@ var controller = unitGO.AddComponent<ExampleEquipmentController>();
 
 controller.ApplyStat  = (statType, modType, value) => myStats.Add(statType, modType, value);
 controller.RemoveStat = (statType, modType, value) => myStats.Remove(statType, modType, value);
-controller.ApplyBuff  = (buffSO) => myBuffSystem.Add(buffSO as MyBuff);
-controller.RemoveBuff = (buffSO) => myBuffSystem.Remove(buffSO as MyBuff);
+controller.BindBuffCallbacks<MyBuff>(myBuffSystem.Add, myBuffSystem.Remove);
 
 controller.RegisterEquipment(equip);   // 등록 시 콜백으로 스탯/버프 적용
 ```
 
 - `statType`은 `string` ID(예: `"STAT_ATK"`). 자기 게임 스탯 키에 매핑한다.
-- 버프/스킬 SO는 `ScriptableObject`로 받으므로, 자기 타입으로 캐스팅해 처리한다.
+- `BindBuffCallbacks<TBuff>`가 버프 타입을 검사해 연결하므로 게임 연결부에 캐스팅이 필요 없다. 잘못된 SO 타입은 오류로 보고된다.
 
 ### (B) 컨트롤러 복제
 
@@ -143,4 +142,4 @@ Editor/          조립 윈도우 · 인스펙터 · 태그 드롭다운 · 뷰�
 
 MIT — [LICENSE.md](LICENSE.md) 참조.
 
-*by lLcrowe · EquipmentAssemblyKit v1.0.0*
+*by lLcrowe · EquipmentAssemblyKit v1.1.0*

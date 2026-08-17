@@ -15,19 +15,30 @@ namespace lLCroweTool.EquipmentAssemblyKit
         public static List<EquipmentStatModifier> CollectPartModifiers(PartData[] parts)
         {
             var modifiers = new List<EquipmentStatModifier>();
-            if (parts == null) return modifiers;
+            CollectPartModifiersRecursive(parts, modifiers);
+            return modifiers;
+        }
+
+        private static void CollectPartModifiersRecursive(
+            PartData[] parts,
+            List<EquipmentStatModifier> modifiers)
+        {
+            if (parts == null) return;
 
             for (int i = 0; i < parts.Length; i++)
             {
-                if (parts[i] == null) continue;
-                var c = parts[i].contribution;
-                if (c == null || c.statModifiers == null) continue;
+                var part = parts[i];
+                if (part == null) continue;
 
-                for (int j = 0; j < c.statModifiers.Length; j++)
-                    modifiers.Add(c.statModifiers[j]);
+                var contribution = part.contribution;
+                if (contribution != null && contribution.statModifiers != null)
+                {
+                    for (int j = 0; j < contribution.statModifiers.Length; j++)
+                        modifiers.Add(contribution.statModifiers[j]);
+                }
+
+                CollectPartModifiersRecursive(part.childParts, modifiers);
             }
-
-            return modifiers;
         }
     }
 }

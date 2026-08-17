@@ -33,6 +33,17 @@ namespace lLCroweTool.EquipmentAssemblyKit
         private readonly Dictionary<AssembledEquipment, List<ScriptableObject>> appliedBuffs
             = new Dictionary<AssembledEquipment, List<ScriptableObject>>();
 
+        /// <summary>
+        /// 게임 버프 타입을 한 번 지정해 적용/해제 콜백을 연결한다.
+        /// 호출부에서 ScriptableObject 캐스팅을 반복하지 않아도 된다.
+        /// </summary>
+        public void BindBuffCallbacks<TBuff>(Action<TBuff> applyBuff, Action<TBuff> removeBuff)
+            where TBuff : ScriptableObject
+        {
+            ApplyBuff = CreateTypedBuffCallback(applyBuff);
+            RemoveBuff = CreateTypedBuffCallback(removeBuff);
+        }
+
         // ── AssemblyController 데이터 접근 구현 ──
         protected override PartSlot[] GetRootSlots(AssembledEquipment assembled) => assembled.source.rootSlots;
         protected override PartData[] GetParts(AssembledEquipment assembled) => assembled.parts;
@@ -40,13 +51,11 @@ namespace lLCroweTool.EquipmentAssemblyKit
         // ── AssemblyController 도메인 훅 ──
         protected override void OnPartEquipped(AssembledEquipment assembled, PartData partData)
         {
-            ApplyPartModifiers(partData);
             ApplyPartBuffs(partData);
         }
 
         protected override void OnPartUnequipped(AssembledEquipment assembled, PartData partData)
         {
-            RemovePartModifiers(partData);
             RemovePartBuffs(partData);
         }
 
@@ -70,6 +79,12 @@ namespace lLCroweTool.EquipmentAssemblyKit
         public void RegisterEquipment(AssembledEquipment equip)
         {
             if (equip == null) return;
+            if (appliedModifiers.ContainsKey(equip))
+            {
+                RefreshEquipmentStats(equip);
+                return;
+            }
+
             var modifiers = equip.GetTotalStatModifiers();
             ApplyStatModifiers(modifiers);
             appliedModifiers[equip] = modifiers;
@@ -128,21 +143,7 @@ namespace lLCroweTool.EquipmentAssemblyKit
             }
         }
 
-        // ── 파츠 스탯/버프 ──
-
-        private void ApplyPartModifiers(PartData partData)
-        {
-            var c = partData.contribution;
-            if (c == null || c.statModifiers == null) return;
-            ApplyStatModifiers(new List<EquipmentStatModifier>(c.statModifiers));
-        }
-
-        private void RemovePartModifiers(PartData partData)
-        {
-            var c = partData.contribution;
-            if (c == null || c.statModifiers == null) return;
-            RemoveStatModifiers(new List<EquipmentStatModifier>(c.statModifiers));
-        }
+        // ── 파츠 버프 ──
 
         private void ApplyPartBuffs(PartData partData)
         {
@@ -167,17 +168,35 @@ namespace lLCroweTool.EquipmentAssemblyKit
             }
         }
 
+        private static Action<ScriptableObject> CreateTypedBuffCallback<TBuff>(Action<TBuff> callback)
+            where TBuff : ScriptableObject
+        {
+            if (callback == null) return null;
+
+            return buff =>
+            {
+                if (buff is TBuff typedBuff)
+                {
+                    callback(typedBuff);
+                    return;
+                }
+
+                string actualType = buff != null ? buff.GetType().Name : "null";
+                Debug.LogError(
+                    $"Equipment buff type mismatch: expected {typeof(TBuff).Name}, received {actualType}.");
+            };
+        }
+
         private void RefreshEquipmentStats(AssembledEquipment equip)
         {
             if (appliedModifiers.TryGetValue(equip, out var oldModifiers))
             {
                 RemoveStatModifiers(oldModifiers);
-                appliedModifiers.Remove(equip);
-            }
 
-            var newModifiers = equip.GetTotalStatModifiers();
-            ApplyStatModifiers(newModifiers);
-            appliedModifiers[equip] = newModifiers;
+                var newModifiers = equip.GetTotalStatModifiers();
+                ApplyStatModifiers(newModifiers);
+                appliedModifiers[equip] = newModifiers;
+            }
 
             equip.Recompute();
             OnStatsChanged?.Invoke();
